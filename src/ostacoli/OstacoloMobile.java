@@ -17,7 +17,11 @@ public class OstacoloMobile implements Ostacolo {
     public static final Color COLORE = new Color(80, 200, 120);
 
     private Rettangolo area;   // non è final: l'ostacolo si muove
-    // scrivete qui gli altri campi che vi servono
+    private double velocita;
+    private double limiteAlto;
+    private double limiteBasso;
+    private Verso verso;
+
 
     /**
      * Pretende: area non è null; velocita è maggiore di 0; l'area sta fra i due limiti
@@ -26,7 +30,10 @@ public class OstacoloMobile implements Ostacolo {
      */
     public OstacoloMobile(Rettangolo area, double velocita, double limiteAlto, double limiteBasso) {
         this.area = area;
-        // scrivete qui
+        this.velocita = velocita;
+        this.limiteAlto = limiteAlto;
+        this.limiteBasso = limiteBasso;
+        this.verso = Verso.GIU;
     }
 
     @Override
@@ -35,18 +42,17 @@ public class OstacoloMobile implements Ostacolo {
     /** Non si rompe mai: il colpo non cambia niente (né dove sta, né come si muove). */
     @Override
     public void colpisci(Ostacoli campo) {
-        // scrivete qui
     }
 
     @Override
     public boolean isRotto() {
-        return false; // scrivete qui
+        return false; 
     }
 
     /** Promette: COLORE. */
     @Override
     public Color getColore() {
-        return null; // scrivete qui
+        return COLORE;
     }
 
     /**
@@ -58,6 +64,22 @@ public class OstacoloMobile implements Ostacolo {
      */
     @Override
     public void avanza() {
-        // scrivete qui
+        if (verso == Verso.GIU) {
+            double newY = area.y() + velocita;
+            if (newY + area.altezza() >= limiteBasso) {
+                area = new Rettangolo(area.x(), limiteBasso - area.altezza(), area.larghezza(), area.altezza());
+                verso = Verso.SU;
+            } else {
+                area = new Rettangolo(area.x(), newY, area.larghezza(), area.altezza());
+            }
+        } else {
+            double newY = area.y() - velocita;
+            if (newY <= limiteAlto) {
+                area = new Rettangolo(area.x(), limiteAlto, area.larghezza(), area.altezza());
+                verso = Verso.GIU;
+            } else {
+                area = new Rettangolo(area.x(), newY, area.larghezza(), area.altezza());
+            }
+        }
     }
 }
